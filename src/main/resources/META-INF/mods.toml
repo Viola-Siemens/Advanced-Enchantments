@@ -1,0 +1,30 @@
+modLoader="javafml"
+loaderVersion="[46,)"
+license="MIT"
+[[mods]]
+modId="advanced_enchantments"
+version="${file.jarVersion}"
+displayName="Advanced Enchantments"
+logoFile="logo.png"
+credits="Hexagram"
+authors="Liu Dongyu, Mnibr"
+description='''
+This mod adds advanced versions for some of the vanilla enchantments.
+
+Channeling II: causes a lightning bolt wherever and whenever it is after hitting an entity.
+Silk Touch II: you can mine spawners, reinforced deepslate, budding amethyst and some other blocks (with nbt!).
+Flame II: makes entities burns longer time after hitted by arrows.
+Infinity II: also makes spectral arrows and tipped arrows infine.
+'''
+[[dependencies.advanced_enchantments]]
+    modId="forge"
+    mandatory=true
+    versionRange="[46,)"
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.advanced_enchantments]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.20,1.21)"
+    ordering="NONE"
+    side="BOTH"
