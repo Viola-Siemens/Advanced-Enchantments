@@ -2,16 +2,18 @@ package com.hexagram2021.advanced_enchantments.common.config;
 
 import net.minecraftforge.common.ForgeConfigSpec;
 
-public class AECommonConfig {
+public final class AECommonConfig {
 	private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
 	private static final ForgeConfigSpec SPEC;
 
-	private static final ForgeConfigSpec.BooleanValue CHANNELING;
-	private static final ForgeConfigSpec.BooleanValue SILK_TOUCH;
-	private static final ForgeConfigSpec.BooleanValue FLAME;
-	private static final ForgeConfigSpec.BooleanValue INFINITY;
+	public static final ForgeConfigSpec.BooleanValue CHANNELING;
+	public static final ForgeConfigSpec.BooleanValue SILK_TOUCH;
+	public static final ForgeConfigSpec.BooleanValue SILK_TOUCH_WITH_NBT;
+	public static final ForgeConfigSpec.BooleanValue FLAME;
+	public static final ForgeConfigSpec.BooleanValue INFINITY;
 
-	private AECommonConfig() {}
+	private AECommonConfig() {
+	}
 
 	static {
 		BUILDER.push("advanced_enchantments-common-config");
@@ -19,6 +21,7 @@ public class AECommonConfig {
 			BUILDER.push("enchantments");
 				CHANNELING = BUILDER.define("CHANNELING", true);
 				SILK_TOUCH = BUILDER.define("SILK_TOUCH", true);
+				SILK_TOUCH_WITH_NBT = BUILDER.define("SILK_TOUCH_WITH_NBT", false);
 				FLAME = BUILDER.define("FLAME", true);
 				INFINITY = BUILDER.define("INFINITY", true);
 			BUILDER.pop();

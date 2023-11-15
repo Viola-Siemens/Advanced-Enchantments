@@ -2,6 +2,7 @@ package com.hexagram2021.advanced_enchantments;
 
 import com.hexagram2021.advanced_enchantments.common.AEContent;
 import com.hexagram2021.advanced_enchantments.common.config.AECommonConfig;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -20,5 +21,7 @@ public class AdvancedEnchantments {
 		AEContent.modConstruction(bus);
 
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, AECommonConfig.getConfig());
+
+		MinecraftForge.EVENT_BUS.register(this);
 	}
 }

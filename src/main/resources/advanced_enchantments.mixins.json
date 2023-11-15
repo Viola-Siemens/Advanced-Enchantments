@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "com.hexagram2021.advanced_enchantments.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "advanced_enchantments.refmap.json",
+  "mixins": [
+    "AbstractArrowMixin",
+    "ArrowItemMixin",
+    "BlockMixin",
+    "ChannelingEnchantmentMixin",
+    "FlameEnchantmentMixin",
+    "InfinityEnchantmentMixin",
+    "SilkTouchEnchantmentMixin",
+    "ThrownTridentMixin"
+  ],
+  "minVersion": "0.8",
+  "client": [
+  ]
+}
