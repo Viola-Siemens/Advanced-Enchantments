@@ -1,7 +1,6 @@
 package com.hexagram2021.advanced_enchantments.common.enchantments;
 
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ElytraItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -9,7 +8,7 @@ import net.minecraft.world.item.enchantment.EnchantmentCategory;
 
 public class DampEnchantment extends Enchantment {
 	public DampEnchantment() {
-		this(Rarity.RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
+		this(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 	}
 
 	protected DampEnchantment(Rarity rarity, EnchantmentCategory category, EquipmentSlot... slots) {
