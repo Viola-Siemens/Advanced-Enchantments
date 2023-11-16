@@ -11,6 +11,7 @@ public class DampEnchantment extends Enchantment {
 		this(Rarity.VERY_RARE, EnchantmentCategory.ARMOR_CHEST, EquipmentSlot.CHEST);
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	protected DampEnchantment(Rarity rarity, EnchantmentCategory category, EquipmentSlot... slots) {
 		super(rarity, category, slots);
 	}
