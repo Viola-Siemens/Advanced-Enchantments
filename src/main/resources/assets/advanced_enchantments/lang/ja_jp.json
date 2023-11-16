@@ -3,5 +3,6 @@
   "language.code": "ja_jp",
   "language.region": "Japan",
 
-  "enchantment.advanced_enchantments.damp": "湿潤"
+  "enchantment.advanced_enchantments.damp": "湿潤",
+  "enchantment.advanced_enchantments.damp.desc": "水の中にいないときでも、激流のエンチャントを付与することでトライデントを利用し、コンジットからコンジットパワーの効果を得ることができます"
 }
