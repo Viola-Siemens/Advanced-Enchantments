@@ -8,6 +8,7 @@
     "ArrowItemMixin",
     "BlockMixin",
     "ChannelingEnchantmentMixin",
+    "EntityMixin",
     "FlameEnchantmentMixin",
     "InfinityEnchantmentMixin",
     "SilkTouchEnchantmentMixin",
