@@ -6,6 +6,7 @@
   "mixins": [
     "AbstractArrowMixin",
     "ArrowItemMixin",
+    "BlockItemMixin",
     "BlockMixin",
     "ChannelingEnchantmentMixin",
     "EntityMixin",

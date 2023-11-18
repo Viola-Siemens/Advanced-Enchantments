@@ -11,6 +11,7 @@ public final class AECommonConfig {
 	public static final ForgeConfigSpec.BooleanValue SILK_TOUCH_WITH_NBT;
 	public static final ForgeConfigSpec.BooleanValue FLAME;
 	public static final ForgeConfigSpec.BooleanValue INFINITY;
+	public static final ForgeConfigSpec.BooleanValue KEEP_ONLY_OPS_SET_NBT;
 
 	private AECommonConfig() {
 	}
@@ -24,6 +25,9 @@ public final class AECommonConfig {
 				SILK_TOUCH_WITH_NBT = BUILDER.define("SILK_TOUCH_WITH_NBT", false);
 				FLAME = BUILDER.define("FLAME", true);
 				INFINITY = BUILDER.define("INFINITY", true);
+			BUILDER.pop();
+			BUILDER.push("miscs");
+				KEEP_ONLY_OPS_SET_NBT = BUILDER.comment("If true, some block entities (eg. spawner, lectern) can not be placed from itemstack with nbt. If false, this feature from vanilla will be disabled.").define("KEEP_ONLY_OPS_SET_NBT", true);
 			BUILDER.pop();
 		BUILDER.pop();
 
