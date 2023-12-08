@@ -5,6 +5,7 @@ import com.google.common.eventbus.Subscribe;
 import com.hexagram2021.advanced_enchantments.AdvancedEnchantments;
 import com.hexagram2021.advanced_enchantments.utils.AEASMDebugUtils;
 import com.hexagram2021.advanced_enchantments.utils.AEEnchantments;
+import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
@@ -14,6 +15,7 @@ import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.FMLInjectionData;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import javax.annotation.Nullable;
@@ -34,7 +36,9 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
     }
     @Override
     public String[] getASMTransformerClass() {
-        return new String[0];
+        return new String[]{
+                "com.hexagram2021.advanced_enchantments.core.AdvancedEnchantmentTransformer"
+        };
     }
 
     @Override
@@ -51,7 +55,7 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
     @Override
     public void injectData(Map<String, Object> data) {
         source=(File)data.get("coremodLocation");
-        AEASMDebugUtils.gameDir=(File)data.get("mcLocation");
+        AEASMDebugUtils.gameDir= Launch.minecraftHome;
     }
 
     @Override

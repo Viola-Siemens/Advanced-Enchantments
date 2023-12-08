@@ -16,6 +16,7 @@ import java.util.function.Consumer;
  * @Author Hileb
  * @Date 2023/12/7 23:15
  **/
+@SuppressWarnings("unused")
 public class AdvancedEnchantmentTransformer implements IClassTransformer {
     public static final HashMap<String, Consumer<ClassNode>> transformers=new HashMap<>();
     static {
@@ -53,7 +54,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                         }
                     }
                 });
-        transformers.put("net.minecraft.item.ItemBlock",
+        transformers.put("net.minecraft.item.ItemBlock",//TODO : not work
                 (cn)->{
                     for(MethodNode mn:cn.methods){
                         if ("setTileEntityNBT".equals(mn.name)){//TODO:find out srg name;
