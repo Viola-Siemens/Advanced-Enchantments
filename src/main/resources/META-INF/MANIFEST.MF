@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+FMLCorePlugin: com.hexagram2021.advanced_enchantments.core.AdvancedEnchantmentsPlugin
