@@ -8,7 +8,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.trident.enchantment.TridentEnchantments;
+import net.minecraft.trident.entity.EntityTrident;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 /**
  * @Project Advanced-Enchantments
@@ -50,10 +52,32 @@ public class AEHooks {
         }else return level;
     }
     public static int hook$EnchantmentUntouching$getMaxLevel(int level){
-        if (AEConfig.enchantments.INFINITY){
+        if (AEConfig.enchantments.SILK_TOUCH){
             if (level<2)return 2;
             else return level;
         }else return level;
+    }
+    public static int hook$EnchantmentArrowFire$getMaxLevel(int level){
+        if (AEConfig.enchantments.FLAME){
+            if (level<2)return 2;
+            else return level;
+        }else return level;
+    }
+    public static int hook$EnchantmentChanneling$getMaxLevel(int level){
+        if (AEConfig.enchantments.CHANNELING){
+            if (level<2)return 2;
+            else return level;
+        }else return level;
+    }
+    public static boolean proxyRedirect$EntityTrident$isThundering(boolean isOK,Entity entity){
+        if (entity instanceof EntityTrident){
+            EntityTrident trident=((EntityTrident)entity);
+            if (EnchantmentHelper.getEnchantmentLevel(TridentEnchantments.CHANNELING, ReflectionHelper.getPrivateValue(EntityTrident.class, trident,"thrownStack")) <= 1)
+                return isOK;
+            else {
+                return true;
+            }
+        }else return isOK;
     }
 
 }

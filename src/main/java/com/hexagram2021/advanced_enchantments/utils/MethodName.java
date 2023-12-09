@@ -41,7 +41,11 @@ public class MethodName {
             .srg("func_77325_b","()I")
             .notch("b","()I")
             .build();
-
+    public static final MethodName m_72911=of()
+            .mcp("isThundering","()Z")
+            .srg("func_72911_I","()Z")
+            .notch("X","()Z")
+            .build();
 
 
 
