@@ -1,20 +1,20 @@
 package com.hexagram2021.advanced_enchantments.utils;
 
-import net.minecraft.launchwrapper.LogWrapper;
-import org.apache.logging.log4j.Level;
+import org.objectweb.asm.tree.AbstractInsnNode;
+import org.objectweb.asm.tree.InsnList;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
+import java.util.Iterator;
 
 /**
  * @Project Advanced-Enchantments
  * @Author Hileb
  * @Date 2023/12/8 22:50
  **/
-public class AEASMDebugUtils{
+public class AEASMUtils {
     public static File gameDir;
     public static final boolean saveTransformedClass=true;//publish turn false.
     public static byte[] push(String rawName,byte[] clazz){
@@ -43,5 +43,17 @@ public class AEASMDebugUtils{
             }
         }
         return clazz;
+    }
+    public static AbstractInsnNode injectBeforeUniqueInsnNode(InsnList method, InsnList hook, int code){
+        AbstractInsnNode ren=null;
+        Iterator<AbstractInsnNode> iterator=method.iterator();
+        while (iterator.hasNext()){
+            ren=iterator.next();
+            if (ren.getOpcode()==code){
+                break;
+            }
+        }
+        method.insertBefore(ren,hook);
+        return ren;
     }
 }

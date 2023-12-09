@@ -2,6 +2,7 @@ package com.hexagram2021.advanced_enchantments.utils;
 
 import com.hexagram2021.advanced_enchantments.config.AEConfig;
 import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -31,7 +32,28 @@ public class AEHooks {
         }
         return arrow;
     }
-    public static boolean onlyOpsCanSetNbt(TileEntity entity){
-        return entity.onlyOpsCanSetNbt() && AEConfig.miscs.KEEP_ONLY_OPS_SET_NBT;
+    public static boolean onlyOpsCanSetNbt(boolean isOK){
+        return isOK && AEConfig.miscs.KEEP_ONLY_OPS_SET_NBT;
     }
+    public static boolean checkDampEnchantment(boolean isWet, Entity entity){
+        if (!isWet){
+            for(ItemStack itemStack: entity.getEquipmentAndArmor()) {//Equipments, and the item held.
+                if (EnchantmentHelper.getEnchantmentLevel(AEEnchantments.DampEnchantment.INSTANCE,itemStack)>0)return true;
+            }
+            return false;
+        }else return true;
+    }
+    public static int hook$EnchantmentArrowInfinite$getMaxLevel(int level){
+        if (AEConfig.enchantments.INFINITY){
+            if (level<2)return 2;
+            else return level;
+        }else return level;
+    }
+    public static int hook$EnchantmentUntouching$getMaxLevel(int level){
+        if (AEConfig.enchantments.INFINITY){
+            if (level<2)return 2;
+            else return level;
+        }else return level;
+    }
+
 }

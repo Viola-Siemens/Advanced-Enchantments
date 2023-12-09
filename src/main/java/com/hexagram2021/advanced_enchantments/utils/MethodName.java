@@ -31,6 +31,16 @@ public class MethodName {
             .srg("func_183000_F","()Z")
             .notch("C","()Z")
             .build();
+    public static final MethodName m_70026=of()
+            .mcp("isWet","()Z")
+            .srg("func_70026_G","()Z")
+            .notch("an","()Z")
+            .build();
+    public static final MethodName m_77325=of()
+            .mcp("getMaxLevel","()I")
+            .srg("func_77325_b","()I")
+            .notch("b","()I")
+            .build();
 
 
 
