@@ -2,9 +2,6 @@ package com.hexagram2021.advanced_enchantments.core;
 
 import com.hexagram2021.advanced_enchantments.utils.AEASMUtils;
 import com.hexagram2021.advanced_enchantments.utils.MethodName;
-import net.minecraft.block.BlockAnvil;
-import net.minecraft.enchantment.EnchantmentArrowFire;
-import net.minecraft.init.Enchantments;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -27,6 +24,10 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.entity.projectile.EntityArrow",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
+                        /**
+                         *public void setEnchantmentEffectsFromEntity(EntityLivingBase p_190547_1_, float p_190547_2_) {
+                         *AEHooks.onArrowImpact(this, p_190547_1_);
+                         **/
                         if (MethodName.m_190547.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,0));
@@ -44,12 +45,23 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.item.ItemArrow",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
+                        /**
+                         * @overwrite
+                         *public boolean isInfinite(ItemStack stack, ItemStack bow, EntityPlayer player) {
+                         *         return AEHooks.isInfinite(this, bow);
+                         *     }
+                         * **/
                         if (MethodName.m_isInfinite.is(mn)){
-                            InsnList hook=new InsnList();
-                            hook.add(new IntInsnNode(Opcodes.ALOAD,4));
-                            hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","isInfinite","(Lnet/minecraft/entity/player/EntityPlayer;)Z",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            mn.instructions.clear();
+                            mn.instructions.add(new IntInsnNode(Opcodes.ALOAD,0));
+                            mn.instructions.add(new IntInsnNode(Opcodes.ALOAD,2));
+                            mn.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","isInfinite","(Lnet/minecraft/item/ItemArrow;Lnet/minecraft/item/ItemStack;)Z",false));
+                            mn.instructions.add(new InsnNode(Opcodes.IRETURN));
                         }
+                        /**
+                         *  public EntityArrow createArrow(World worldIn, ItemStack stack, EntityLivingBase shooter)
+                         *         return AEHooks.createArrow(entitytippedarrow, shooter);
+                         * **/
                         else if (MethodName.m_185052.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,3));
@@ -81,7 +93,6 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                         }
                     }
                 });
-        //TODO:TridentChannelingEnchantment
         transformers.put("net.minecraft.entity.Entity",
                 (cn)->{
                     for(MethodNode mn: cn.methods){
@@ -89,7 +100,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,0));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","checkDampEnchantment","(ZLnet/minecraft/entity/Entity;)Z",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtils.injectBeforeAllInsnNode(mn.instructions,hook,Opcodes.IRETURN);
                             return;
                         }
                     }
@@ -98,10 +109,15 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.enchantment.EnchantmentArrowFire",
                 (cn)->{
                     for(MethodNode mn: cn.methods){
+                        /**
+                         * public int getMaxLevel() {
+                         *         return AEHooks.hook$EnchantmentArrowFire$getMaxLevel(1);
+                         * }
+                         * **/
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentArrowFire$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
                             return;
                         }
                     }
@@ -109,10 +125,15 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.enchantment.EnchantmentArrowInfinite",
                 (cn)->{
                     for(MethodNode mn: cn.methods){
+                        /**
+                         * public int getMaxLevel() {
+                         *         return AEHooks.hook$EnchantmentArrowInfinite$getMaxLevel(1);
+                         * }
+                         * **/
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentArrowInfinite$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
                             return;
                         }
                     }
@@ -121,9 +142,14 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                 (cn)->{
                     for(MethodNode mn: cn.methods){
                         if (MethodName.m_77325.is(mn)){
+                            /**
+                             * public int getMaxLevel() {
+                             *          return AEHooks.hook$EnchantmentUntouching$getMaxLevel(1);
+                             * }
+                             * **/
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentUntouching$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
                             return;
                         }
                     }
@@ -132,10 +158,15 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.trident.enchantment.EnchantmentChanneling",
                 (cn)->{
                     for(MethodNode mn: cn.methods){
+                        /**
+                         *  public int getMaxLevel() {
+                         *         return AEHooks.hook$EnchantmentChanneling$getMaxLevel(1);
+                         *  }
+                         * **/
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentChanneling$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
                             return;
                         }
                     }
@@ -143,6 +174,11 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.trident.entity.EntityTrident",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
+                        /**
+                         * float volume = 1.0F;
+                         *if (AEHooks.proxyRedirect$EntityTrident$isThundering(this.world.isThundering(), this) && TridentEnchantments.hasChanneling(this.thrownStack)) {
+                         *
+                         * **/
                         if ("onHitEntity".equals(mn.name)){//only name
                             AbstractInsnNode ren=null;
                             ListIterator<AbstractInsnNode> iterator=mn.instructions.iterator();

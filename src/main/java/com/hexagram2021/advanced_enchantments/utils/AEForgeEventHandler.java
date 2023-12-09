@@ -1,21 +1,17 @@
 package com.hexagram2021.advanced_enchantments.utils;
 
 import com.hexagram2021.advanced_enchantments.config.AEConfig;
-import net.minecraft.block.BlockShulkerBox;
-import net.minecraft.block.BlockSkull;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.nbt.NBTUtil;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityShulkerBox;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -53,7 +49,7 @@ public class AEForgeEventHandler {
                     //minecraft use main-hand item to conclude the level of SILK_TOUCH
                     event.getDrops().clear();
                     IBlockState state =player.world.getBlockState(event.getPos());
-                    ItemStack stack=state.getBlock().getItem(player.world,event.getPos(),state);
+                    ItemStack stack=new ItemStack(state.getBlock());
                     TileEntity tileEntity=player.world.getTileEntity(event.getPos());
                     if (tileEntity!=null){
                         if (!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());

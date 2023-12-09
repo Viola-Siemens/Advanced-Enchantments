@@ -4,9 +4,9 @@ import com.hexagram2021.advanced_enchantments.config.AEConfig;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
+import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.trident.enchantment.TridentEnchantments;
 import net.minecraft.trident.entity.EntityTrident;
@@ -19,14 +19,15 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  **/
 public class AEHooks {
     public static void onArrowImpact(EntityArrow arrow,EntityLivingBase livingBase){
-        if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.INFINITY, livingBase) > 1)
+        if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, livingBase) > 1)
         {
             arrow.setFire(240);
         }
     }
-    public static boolean isInfinite(boolean rv,EntityPlayer player)
+    public static boolean isInfinite(ItemArrow arrow,ItemStack bow)
     {
-        return rv || EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME,player.getHeldItem(player.getActiveHand()))>=1;
+        int ench = net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(net.minecraft.init.Enchantments.INFINITY, bow);
+        return (ench >0 && arrow.getClass()== ItemArrow.class) || ench>1;
     }
     public static EntityArrow createArrow(EntityArrow arrow,EntityLivingBase shooter){
         if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME,shooter.getHeldItem(shooter.getActiveHand()))>1){

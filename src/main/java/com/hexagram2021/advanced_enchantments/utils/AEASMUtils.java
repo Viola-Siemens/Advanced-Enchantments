@@ -8,6 +8,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.ListIterator;
 
 /**
  * @Project Advanced-Enchantments
@@ -55,5 +57,19 @@ public class AEASMUtils {
         }
         method.insertBefore(ren,hook);
         return ren;
+    }
+    public static void injectBeforeAllInsnNode(InsnList method, InsnList hook, int code){
+        LinkedList<AbstractInsnNode> nodes=new LinkedList<>();
+        ListIterator<AbstractInsnNode> iterator=method.iterator();
+        AbstractInsnNode node;
+        while (iterator.hasNext()){
+            node=iterator.next();
+            if (node.getOpcode()==code){
+                nodes.add(node);
+            }
+        }
+        for(AbstractInsnNode node1:nodes){
+            method.insertBefore(node1,hook);
+        }
     }
 }
