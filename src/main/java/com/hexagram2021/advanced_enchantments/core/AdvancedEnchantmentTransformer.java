@@ -114,7 +114,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                     }
                 });
         //TODO:CHANNELING
-        
+
     }
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {

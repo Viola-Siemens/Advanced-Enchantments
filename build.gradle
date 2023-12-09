@@ -1,5 +1,8 @@
 buildscript {
     repositories {
+maven {
+        url "https://cursemaven.com"
+    }
         if (use_mirror_url == "true") {
             // clear all proxy settings, this is available for global
             System.clearProperty "http.proxyHost"
@@ -51,7 +54,7 @@ minecraft {
 }
 
 repositories {
-    maven { url = "https://repo.spongepowered.org/maven" }
+    maven { url = "https://cursemaven.com" }
     if (useMirror) {
         // remove minecraft and forge maven repositories to avoid interference
         removeIf {
@@ -69,8 +72,8 @@ repositories {
 
 dependencies {
 
+    deobfCompile "curse.maven:trident-mod-469262:4798618"
 
-    compile files('libs/KubeJS-forge-1.12.2-1.0.0.24.jar')
     //Magic_Circle-1.0.1.jar
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
