@@ -1,14 +1,18 @@
 package com.hexagram2021.advanced_enchantments.core;
 
 import com.hexagram2021.advanced_enchantments.utils.AEASMDebugUtils;
+import com.hexagram2021.advanced_enchantments.utils.MethodName;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.asm.transformers.FieldRedirectTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.function.Consumer;
 
 /**
@@ -23,14 +27,14 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.entity.projectile.EntityArrow",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
-                        if ("func_190547_a".equals(mn.name) || "setEnchantmentEffectsFromEntity".equals(mn.name)){
+                        if (MethodName.m_190547.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,0));
                             hook.add(new IntInsnNode(Opcodes.ALOAD,1));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","onArrowImpact","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)V"));
                             injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.RETURN);
                         }
-                        //TODO:find out what should I use in 1.12.2?
+                        //It is not exist in 1.12.2.
 //                      @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
 //                       private void getEntityOnFireSeconds(Entity instance, int seconds) {
 //                          instance.setSecondsOnFire(((AbstractArrow)(Object)this).getRemainingFireTicks() / 320);
@@ -40,13 +44,13 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
         transformers.put("net.minecraft.item.ItemArrow",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
-                        if ("isInfinite".equals(mn.name)){//TODO:find out srg name;
+                        if (MethodName.m_isInfinite.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,4));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","isInfinite","(Lnet/minecraft/entity/player/EntityPlayer;)Z"));
                             injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
                         }
-                        else if ("func_185052_a".equals(mn.name) || "createArrow".equals(mn.name)){
+                        else if (MethodName.m_185052.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,3));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","createArrow","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)Lnet/minecraft/entity/projectile/EntityArrow;"));
@@ -54,22 +58,27 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                         }
                     }
                 });
-        transformers.put("net.minecraft.item.ItemBlock",//TODO : not work
+        transformers.put("net.minecraft.item.ItemBlock",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
-                        if ("setTileEntityNBT".equals(mn.name)){//TODO:find out srg name;
+                        if (MethodName.m_179224.is(mn)){
                             AbstractInsnNode ren=null;
-                            Iterator<AbstractInsnNode> iterator=mn.instructions.iterator();
+                            ListIterator<AbstractInsnNode> iterator=mn.instructions.iterator();
                             while (iterator.hasNext()){
                                 ren=iterator.next();
-                                if (ren instanceof MethodInsnNode){
+                                if (ren.getType()==AbstractInsnNode.METHOD_INSN){
                                     MethodInsnNode methodInsnNode=(MethodInsnNode) ren;
-                                    if (methodInsnNode.getOpcode()==Opcodes.INVOKEVIRTUAL && ("net/minecraft/tileentity/TileEntity".equals(methodInsnNode.owner) || "avj".equals(methodInsnNode.owner)) && ("onlyOpsCanSetNbt".equals(methodInsnNode.name)|| "func_183000_F".equals(methodInsnNode.name))){
-                                        break;
+                                    if (methodInsnNode.getOpcode()==Opcodes.INVOKEVIRTUAL){
+                                        if ("net/minecraft/tileentity/TileEntity".equals(methodInsnNode.owner) || "avj".equals(methodInsnNode.owner)){
+                                            if (MethodName.m_183000.is(methodInsnNode.name,methodInsnNode.desc)){
+                                                iterator.remove();
+                                                iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","createArrow","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)Lnet/minecraft/entity/projectile/EntityArrow;",false));
+                                                return;
+                                            }
+                                        }
                                     }
                                 }
                             }
-                            mn.instructions.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","createArrow","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)Lnet/minecraft/entity/projectile/EntityArrow;"));
                         }
                     }
                 });
@@ -77,7 +86,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
     }
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
-        if (basicClass!=null){
+        if (basicClass!=null && basicClass.length>0){
             if (transformers.containsKey(transformedName)){
                 ClassReader classReader=new ClassReader(basicClass);
                 ClassNode cn=new ClassNode();

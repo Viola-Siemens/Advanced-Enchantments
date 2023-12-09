@@ -55,7 +55,7 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
     @Override
     public void injectData(Map<String, Object> data) {
         source=(File)data.get("coremodLocation");
-        AEASMDebugUtils.gameDir= Launch.minecraftHome;
+        AEASMDebugUtils.gameDir=(File)data.get("mcLocation");
     }
 
     @Override
