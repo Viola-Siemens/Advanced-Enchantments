@@ -81,16 +81,15 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
                     "\n" +
                     "And it also adds an enchantment:\n" +
                     "\n" +
-                    "Damp (for chestplates and elytras): you can use tridents with riptide enchantment, take the conduit power effect from conduit in any case, even not in water.\n" +
-                    "\n" +
-                    "Idealland - they provided this framework for dev-environment.";
+                    "Damp (for chestplates and elytras): you can use tridents with riptide enchantment, take the conduit power effect from conduit in any case, even not in water.";
             metadata.url="https://www.mcmod.cn/class/12832.html";
             metadata.authorList.add("Liu Dongyu");
             metadata.authorList.add("Mnibr");
             metadata.authorList.add("Hileb");
             metadata.logoFile="logo.png";
             metadata.version=AdvancedEnchantments.VERSION;
-            metadata.credits="Hexagram";
+            metadata.credits="Hexagram\n" +
+                    "Idealland - they provided this framework for dev-environment.";
         }
 
         @Override
