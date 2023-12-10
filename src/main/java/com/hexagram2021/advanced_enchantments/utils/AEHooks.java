@@ -1,19 +1,14 @@
 package com.hexagram2021.advanced_enchantments.utils;
 
 import com.hexagram2021.advanced_enchantments.config.AEConfig;
-import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Enchantments;
-import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.trident.enchantment.TridentEnchantments;
 import net.minecraft.trident.entity.EntityTrident;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 /**
@@ -66,10 +61,11 @@ public class AEHooks {
         }else return level;
     }
     public static int hook$EnchantmentUntouching$getMaxLevel(int level){
-        if (AEConfig.enchantments.SILK_TOUCH){
-            if (level<2)return 2;
-            else return level;
-        }else return level;
+//        if (AEConfig.enchantments.SILK_TOUCH){
+//            if (level<2)return 2;
+//            else return level;
+//        }else return level;
+        return level;
     }
     public static int hook$EnchantmentArrowFire$getMaxLevel(int level){
         if (AEConfig.enchantments.FLAME){
@@ -77,24 +73,20 @@ public class AEHooks {
             else return level;
         }else return level;
     }
-    public static int hook$EnchantmentChanneling$getMaxLevel(int level){
-        if (AEConfig.enchantments.CHANNELING){
-            if (level<2)return 2;
-            else return level;
-        }else return level;
-    }
-    public static boolean proxyRedirect$EntityTrident$isThundering(boolean isOK,Entity entity){
-        if (entity instanceof EntityTrident){
-            EntityTrident trident=((EntityTrident)entity);
+    public static class Trident{//compat of trident
+        public static int hook$EnchantmentChanneling$getMaxLevel(int level){
+            if (AEConfig.enchantments.CHANNELING){
+                if (level<2)return 2;
+                else return level;
+            }else return level;
+        }
+        public static boolean proxyRedirect$EntityTrident$isThundering(boolean isOK,EntityTrident  trident){
             if (EnchantmentHelper.getEnchantmentLevel(TridentEnchantments.CHANNELING, ReflectionHelper.getPrivateValue(EntityTrident.class, trident,"thrownStack")) <= 1)
                 return isOK;
             else {
                 return true;
             }
-        }else return isOK;
-    }
-    public static void onSilkIIDrops(Block block, World worldIn, BlockPos pos, IBlockState state){
-
+        }
     }
 
 }

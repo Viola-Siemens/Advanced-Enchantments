@@ -27,6 +27,7 @@ public class AEEnchantments {
             super(Rarity.VERY_RARE,EnumEnchantmentType.ARMOR_CHEST, new EntityEquipmentSlot[]{EntityEquipmentSlot.CHEST});
             setRegistryName(new ResourceLocation(AdvancedEnchantments.MODID,"damp"));
             setName("advanced_enchantments.damp");
+
         }
 
         @Override

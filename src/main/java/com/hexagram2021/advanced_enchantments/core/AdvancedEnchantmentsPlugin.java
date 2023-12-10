@@ -4,9 +4,8 @@ import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.hexagram2021.advanced_enchantments.AdvancedEnchantments;
 import com.hexagram2021.advanced_enchantments.config.AEConfig;
-import com.hexagram2021.advanced_enchantments.utils.AEASMUtils;
+import com.hexagram2021.advanced_enchantments.utils.AEASMUtil;
 import com.hexagram2021.advanced_enchantments.utils.AEEnchantments;
-import com.hexagram2021.advanced_enchantments.utils.AEForgeEventHandler;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Config;
@@ -56,7 +55,7 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
     @Override
     public void injectData(Map<String, Object> data) {
         source=(File)data.get("coremodLocation");
-        AEASMUtils.gameDir=(File)data.get("mcLocation");
+        AEASMUtil.gameDir=(File)data.get("mcLocation");
 
         CoreModManager.getIgnoredMods().remove(source.getName());
     }
