@@ -46,7 +46,16 @@ public class MethodName {
             .srg("func_72911_I","()Z")
             .notch("X","()Z")
             .build();
-
+    public static final MethodName m_184549=of()
+            .mcp("onHit","(Lnet/minecraft/util/math/RayTraceResult;)V")
+            .srg("func_184549_a","(Lnet/minecraft/util/math/RayTraceResult;)V")
+            .notch("a","(Lbhc;)V")
+            .build();
+    public static final MethodName m_70015=of()
+            .mcp("setFire","(I)V")
+            .srg("func_70015_d","(I)V")
+            .notch("i","(I)V")
+            .build();
 
 
 

@@ -18,7 +18,7 @@ import java.util.ListIterator;
  **/
 public class AEASMUtils {
     public static File gameDir;
-    public static final boolean saveTransformedClass=true;//publish turn false.
+    public static final boolean saveTransformedClass=AELogger.isDeBug;
     public static byte[] push(String rawName,byte[] clazz){
         if (saveTransformedClass){
             final File outRoot=new File(gameDir,"clazzs/");

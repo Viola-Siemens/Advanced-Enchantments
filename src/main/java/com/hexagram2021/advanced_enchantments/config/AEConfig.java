@@ -15,7 +15,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 public class AEConfig {
     @SubscribeEvent
     public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-        if (event.getModID().equals(AdvancedEnchantments.MODID)) {
+        if (AdvancedEnchantments.MODID.equals(event.getModID())) {
             ConfigManager.sync(AdvancedEnchantments.MODID, Config.Type.INSTANCE);
         }
     }

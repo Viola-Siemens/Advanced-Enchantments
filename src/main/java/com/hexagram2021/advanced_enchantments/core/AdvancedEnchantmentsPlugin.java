@@ -3,6 +3,7 @@ package com.hexagram2021.advanced_enchantments.core;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.hexagram2021.advanced_enchantments.AdvancedEnchantments;
+import com.hexagram2021.advanced_enchantments.config.AEConfig;
 import com.hexagram2021.advanced_enchantments.utils.AEASMUtils;
 import com.hexagram2021.advanced_enchantments.utils.AEEnchantments;
 import com.hexagram2021.advanced_enchantments.utils.AEForgeEventHandler;
@@ -15,6 +16,7 @@ import net.minecraftforge.fml.common.LoadController;
 import net.minecraftforge.fml.common.ModMetadata;
 import net.minecraftforge.fml.common.event.FMLConstructionEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import javax.annotation.Nullable;
@@ -55,6 +57,8 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
     public void injectData(Map<String, Object> data) {
         source=(File)data.get("coremodLocation");
         AEASMUtils.gameDir=(File)data.get("mcLocation");
+
+        CoreModManager.getIgnoredMods().remove(source.getName());
     }
 
     @Override
@@ -105,7 +109,23 @@ public class AdvancedEnchantmentsPlugin implements IFMLLoadingPlugin{
         @Subscribe
         public void preInit(FMLPreInitializationEvent event){
             MinecraftForge.EVENT_BUS.register(AEEnchantments.class);
-            MinecraftForge.EVENT_BUS.register(AEForgeEventHandler.class);
+            //MinecraftForge.EVENT_BUS.register(AEForgeEventHandler.class);
+            MinecraftForge.EVENT_BUS.register(AEConfig.class);
         }
+        @Override
+        public Class<?> getCustomResourcePackClass()
+        {
+            if (this.getSource()!=null && this.getSource().exists()){
+                try
+                {
+                    return getSource().isDirectory() ? Class.forName("net.minecraftforge.fml.client.FMLFolderResourcePack", true, getClass().getClassLoader()) : Class.forName("net.minecraftforge.fml.client.FMLFileResourcePack", true, getClass().getClassLoader());
+                }
+                catch (ClassNotFoundException e)
+                {
+                    return null;
+                }
+            }else return null;
+        }
+
     }
 }

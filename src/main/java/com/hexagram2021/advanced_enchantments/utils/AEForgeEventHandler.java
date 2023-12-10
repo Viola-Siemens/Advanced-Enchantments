@@ -6,6 +6,8 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Enchantments;
 import net.minecraft.init.Items;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -15,6 +17,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 /**
  * @Project Advanced-Enchantments
@@ -40,22 +43,51 @@ public class AEForgeEventHandler {
      *            }        * 		}
      *    }
      * **/
-    @SubscribeEvent
+    @SubscribeEvent//ASM event Handler----To remove the normal drops
     public static void onBlockDrops(BlockEvent.HarvestDropsEvent event){
         if (AEConfig.enchantments.SILK_TOUCH_WITH_NBT){// the fast is judging a boolean before.
             EntityPlayer player=event.getHarvester();
-            if (!player.world.isRemote){
-                if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH,player.getHeldItemMainhand())>=1){
+            if (player!=null && !player.world.isRemote){
+                if (EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH,player.getHeldItemMainhand())>1){
                     //minecraft use main-hand item to conclude the level of SILK_TOUCH
-                    event.getDrops().clear();
-                    IBlockState state =player.world.getBlockState(event.getPos());
-                    ItemStack stack=new ItemStack(state.getBlock());
-                    TileEntity tileEntity=player.world.getTileEntity(event.getPos());
+                    ItemStack stack=ItemStack.EMPTY;
+                    IBlockState state = event.getState();
+
+                    //get BlockItem
+                    Item itemBlock=Item.getItemFromBlock(state.getBlock());
+                    if (itemBlock != Items.AIR){
+                        stack=new ItemStack(itemBlock);
+                        if (itemBlock.getHasSubtypes())
+                        {
+                            stack.setItemDamage(state.getBlock().getMetaFromState(state));
+                        }
+                    }else {
+                        for(ItemStack stack1:event.getDrops()){// find the block could be.
+                            if (stack1.getItem() instanceof ItemBlock){
+                                stack=stack1;
+                                break;
+                            }
+                        }
+                    }
+                    if (stack.isEmpty()){
+                        Item itemB= ForgeRegistries.ITEMS.getValue(state.getBlock().getRegistryName());
+                        if (itemB!=null && itemB!=Items.AIR){
+                            if (itemB.getHasSubtypes())
+                            {
+                                stack=new ItemStack(itemB, 1, state.getBlock().getMetaFromState(state));
+                            }
+                        }
+                    }
+
+
+
+                    TileEntity tileEntity=event.getWorld().getTileEntity(event.getPos());
                     if (tileEntity!=null){
+                        AELogger.bigWarning("???");
                         if (!stack.hasTagCompound())stack.setTagCompound(new NBTTagCompound());
                         NBTTagCompound compound=stack.getTagCompound();
                         compound.setTag("BlockEntityTag", tileEntity.serializeNBT());
-                        if (Items.SKULL==stack.getItem() && tileEntity instanceof TileEntitySkull){
+                        if (Items.SKULL==stack.getItem() && tileEntity instanceof TileEntitySkull){//especially in skull
                             NBTTagCompound p_1808129_t = new NBTTagCompound();
                             NBTUtil.writeGameProfile(p_1808129_t, ((TileEntitySkull)tileEntity).getPlayerProfile());
                             compound.setTag("SkullOwner", p_1808129_t);
@@ -66,7 +98,11 @@ public class AEForgeEventHandler {
                             display.setTag("Lore", list);
                             compound.setTag("display",display);
                         }
-
+                    }
+                    event.getDrops().clear();//clear the old drops
+                    event.getDrops().add(stack);//add correct drop
+                    for(ItemStack stack1:event.getDrops()){//debug
+                        AELogger.LOGGER.error(stack1.toString());
                     }
                 }
             }

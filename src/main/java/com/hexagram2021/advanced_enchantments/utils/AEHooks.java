@@ -1,6 +1,8 @@
 package com.hexagram2021.advanced_enchantments.utils;
 
 import com.hexagram2021.advanced_enchantments.config.AEConfig;
+import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -10,6 +12,8 @@ import net.minecraft.item.ItemArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.trident.enchantment.TridentEnchantments;
 import net.minecraft.trident.entity.EntityTrident;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 /**
@@ -19,15 +23,24 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
  **/
 public class AEHooks {
     public static void onArrowImpact(EntityArrow arrow,EntityLivingBase livingBase){
-        if (EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, livingBase) > 1)
+        int level=EnchantmentHelper.getMaxEnchantmentLevel(Enchantments.FLAME, livingBase);
+        if (level > 1)
         {
             arrow.setFire(240);
+            arrow.getEntityData().setInteger("ae.fireII",level);
         }
     }
-    public static boolean isInfinite(ItemArrow arrow,ItemStack bow)
+    public static boolean isInfinite(boolean isOK,int ench)
     {
-        int ench = net.minecraft.enchantment.EnchantmentHelper.getEnchantmentLevel(net.minecraft.init.Enchantments.INFINITY, bow);
-        return (ench >0 && arrow.getClass()== ItemArrow.class) || ench>1;
+       return isOK || ench>1;
+    }
+    public static void setFire(Entity entity,int ignored,EntityArrow _this){
+        if (_this.getEntityData().hasKey("ae.fireII",3)){
+            int level=_this.getEntityData().getInteger("ae.fireII");
+            if (level>1){//give player some unexpected.
+                entity.setFire(level*5 + 2);
+            }else entity.setFire(5);
+        }
     }
     public static EntityArrow createArrow(EntityArrow arrow,EntityLivingBase shooter){
         if (EnchantmentHelper.getEnchantmentLevel(Enchantments.FLAME,shooter.getHeldItem(shooter.getActiveHand()))>1){
@@ -79,6 +92,9 @@ public class AEHooks {
                 return true;
             }
         }else return isOK;
+    }
+    public static void onSilkIIDrops(Block block, World worldIn, BlockPos pos, IBlockState state){
+
     }
 
 }
