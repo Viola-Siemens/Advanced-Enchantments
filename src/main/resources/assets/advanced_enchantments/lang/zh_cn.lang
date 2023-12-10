@@ -1,0 +1,6 @@
+language=Chinese
+language.code=zh_cn
+language.region=China
+
+enchantment.advanced_enchantments.damp=潮湿
+enchantment.advanced_enchantments.damp.desc=你可以使用激流附魔的三叉戟，获得潮涌核心的潮涌能量，即使你不在水中。
