@@ -16,9 +16,9 @@ import java.util.ListIterator;
  * @Author Hileb
  * @Date 2023/12/8 22:50
  **/
-public class AEASMUtils {
+public class AEASMUtil {
     public static File gameDir;
-    public static final boolean saveTransformedClass=AELogger.isDeBug;
+    public static final boolean saveTransformedClass=true;
     public static byte[] push(String rawName,byte[] clazz){
         if (saveTransformedClass){
             final File outRoot=new File(gameDir,"clazzs/");

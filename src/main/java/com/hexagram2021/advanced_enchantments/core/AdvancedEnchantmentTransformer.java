@@ -1,6 +1,6 @@
 package com.hexagram2021.advanced_enchantments.core;
 
-import com.hexagram2021.advanced_enchantments.utils.AEASMUtils;
+import com.hexagram2021.advanced_enchantments.utils.AEASMUtil;
 import com.hexagram2021.advanced_enchantments.utils.MethodName;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -10,7 +10,7 @@ import org.objectweb.asm.tree.*;
 
 import java.util.HashMap;
 import java.util.ListIterator;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @Project Advanced-Enchantments
@@ -19,7 +19,7 @@ import java.util.function.Consumer;
  **/
 @SuppressWarnings("unused")
 public class AdvancedEnchantmentTransformer implements IClassTransformer {
-    public static final HashMap<String, Consumer<ClassNode>> transformers=new HashMap<>();
+    public static final HashMap<String, Function<ClassNode,Integer>> transformers=new HashMap<>();
     static {
         transformers.put("net.minecraft.entity.projectile.EntityArrow",
                 (cn)->{
@@ -33,7 +33,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             hook.add(new IntInsnNode(Opcodes.ALOAD,0));
                             hook.add(new IntInsnNode(Opcodes.ALOAD,1));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","onArrowImpact","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)V",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.RETURN);
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.RETURN);
                         }
                         //It is not exist in 1.12.2. but hard code.
 //                      @Redirect(method = "onHitEntity", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/Entity;setSecondsOnFire(I)V"))
@@ -65,6 +65,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             }
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.item.ItemArrow",
                 (cn)->{
@@ -94,9 +95,10 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             InsnList hook=new InsnList();
                             hook.add(new IntInsnNode(Opcodes.ALOAD,3));
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","createArrow","(Lnet/minecraft/entity/projectile/EntityArrow;Lnet/minecraft/entity/EntityLivingBase;)Lnet/minecraft/entity/projectile/EntityArrow;",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.ARETURN);
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.item.ItemBlock",
                 (cn)->{
@@ -117,7 +119,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                                         if ("net/minecraft/tileentity/TileEntity".equals(methodInsnNode.owner) || "avj".equals(methodInsnNode.owner)){
                                             if (MethodName.m_183000.is(methodInsnNode.name,methodInsnNode.desc)){
                                                 iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","onlyOpsCanSetNbt","(Z)Z",false));
-                                                return;
+                                                return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                                             }
                                         }
                                     }
@@ -125,6 +127,7 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             }
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.entity.Entity",
                 (cn)->{
@@ -155,9 +158,10 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                                     iterator.add(new InsnNode(Opcodes.IRETURN));
                                 }
                             }
-                            return;
+                            return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         //in 1.12.2, cost is judged by anvil, not enchantment.//modifyMinCost//modifyMaxCost
         transformers.put("net.minecraft.enchantment.EnchantmentArrowFire",
@@ -171,10 +175,11 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentArrowFire$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
-                            return;
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
+                            return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.enchantment.EnchantmentArrowInfinite",
                 (cn)->{
@@ -187,10 +192,11 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentArrowInfinite$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
-                            return;
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
+                            return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.enchantment.EnchantmentUntouching",
                 (cn)->{
@@ -203,10 +209,11 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                              * **/
                             InsnList hook=new InsnList();
                             hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentUntouching$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
-                            return;
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
+                            return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         //Trident compat
         transformers.put("net.minecraft.trident.enchantment.EnchantmentChanneling",
@@ -214,23 +221,24 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                     for(MethodNode mn: cn.methods){
                         /**
                          *  public int getMaxLevel() {
-                         *         return AEHooks.hook$EnchantmentChanneling$getMaxLevel(1);
+                         *         return AEHooks.Trident.hook$EnchantmentChanneling$getMaxLevel(1);
                          *  }
                          * **/
                         if (MethodName.m_77325.is(mn)){
                             InsnList hook=new InsnList();
-                            hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","hook$EnchantmentChanneling$getMaxLevel","(I)I",false));
-                            AEASMUtils.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
-                            return;
+                            hook.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks$Trident","hook$EnchantmentChanneling$getMaxLevel","(I)I",false));
+                            AEASMUtil.injectBeforeUniqueInsnNode(mn.instructions,hook,Opcodes.IRETURN);
+                            return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
         transformers.put("net.minecraft.trident.entity.EntityTrident",
                 (cn)->{
                     for(MethodNode mn:cn.methods){
                         /**
                          * float volume = 1.0F;
-                         *if (AEHooks.proxyRedirect$EntityTrident$isThundering(this.world.isThundering(), this) && TridentEnchantments.hasChanneling(this.thrownStack)) {
+                         *if (AEHooks.Trident.proxyRedirect$EntityTrident$isThundering(this.world.isThundering(), this) && TridentEnchantments.hasChanneling(this.thrownStack)) {
                          *
                          * **/
                         if ("onHitEntity".equals(mn.name)){//only name
@@ -244,8 +252,8 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                                         if ("net/minecraft/world/World".equals(methodInsnNode.owner) || "amu".equals(methodInsnNode.owner)){
                                             if (MethodName.m_72911.is(methodInsnNode.name,methodInsnNode.desc)){
                                                 iterator.add(new IntInsnNode(Opcodes.ALOAD,0));
-                                                iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks","proxyRedirect$EntityTrident$isThundering","(ZLnet/minecraft/entity/Entity;)Z",false));
-                                                return;
+                                                iterator.add(new MethodInsnNode(Opcodes.INVOKESTATIC,"com/hexagram2021/advanced_enchantments/utils/AEHooks$Trident","proxyRedirect$EntityTrident$isThundering","(ZLnet/minecraft/trident/entity/EntityTrident;)Z",false));
+                                                return ClassWriter.COMPUTE_MAXS;
                                             }
                                         }
                                     }
@@ -253,23 +261,29 @@ public class AdvancedEnchantmentTransformer implements IClassTransformer {
                             }
                         }
                     }
+                    return ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES;
                 });
 
     }
     @Override
     public byte[] transform(String name, String transformedName, byte[] basicClass) {
         if (basicClass!=null && basicClass.length>0){
-            if (transformers.containsKey(transformedName)){
-                ClassReader classReader=new ClassReader(basicClass);
-                ClassNode cn=new ClassNode();
-                classReader.accept(cn, 0);
+            try{
+                if (transformers.containsKey(transformedName)){
+                    ClassReader classReader=new ClassReader(basicClass);
+                    ClassNode cn=new ClassNode();
+                    classReader.accept(cn, 0);
 
-                transformers.get(transformedName).accept(cn);
+                    int flags=transformers.get(transformedName).apply(cn);
 
-                ClassWriter classWriter=new ClassWriter(classReader,ClassWriter.COMPUTE_MAXS|ClassWriter.COMPUTE_FRAMES);
-                cn.accept(classWriter);
-                return AEASMUtils.push(transformedName,classWriter.toByteArray());
-            }else return basicClass;
+                    ClassWriter classWriter=new ClassWriter(classReader,flags);
+                    cn.accept(classWriter);
+                    return AEASMUtil.push(transformedName,classWriter.toByteArray());
+                }else return basicClass;
+            }catch (Exception e){
+                e.printStackTrace();
+                return basicClass;
+            }
         }
         return basicClass;
     }
